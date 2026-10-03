@@ -1,0 +1,146 @@
+<!doctype html><html lang="en" data-t="ravens" data-m="dark"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="THE LEAGUE">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png"><title>THE LEAGUE</title>
+<style>
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+[data-m=dark]{--tx:#f3f1f8}[data-m=light]{--tx:#16131d}
+[data-t="ravens"][data-m=dark]{--bg:#0e0a18;--cd:#1b1430;--ac:#a98bff;--on:#10091f}
+[data-t="ravens"][data-m=light]{--bg:#f5f2fb;--cd:#fff;--ac:#2a1a78;--on:#fff}
+[data-t="niners"][data-m=dark]{--bg:#150b0c;--cd:#261416;--ac:#e8454a;--on:#fff}
+[data-t="niners"][data-m=light]{--bg:#faf4ea;--cd:#fff;--ac:#a5121a;--on:#fff}
+[data-t="raiders"][data-m=dark]{--bg:#0a0a0b;--cd:#171718;--ac:#c9ccd0;--on:#0a0a0b}
+[data-t="raiders"][data-m=light]{--bg:#eff0f1;--cd:#fff;--ac:#1a1a1c;--on:#fff}
+[data-t="browns"][data-m=dark]{--bg:#150d08;--cd:#251a12;--ac:#ff6a1a;--on:#1a0d03}
+[data-t="browns"][data-m=light]{--bg:#fbf4ec;--cd:#fff;--ac:#c24a0a;--on:#fff}
+[data-t="bears"][data-m=dark]{--bg:#09111f;--cd:#12203a;--ac:#ff7a30;--on:#1a0c02}
+[data-t="bears"][data-m=light]{--bg:#f2f5fa;--cd:#fff;--ac:#0b2a5a;--on:#fff}
+[data-t="eagles"][data-m=dark]{--bg:#05130f;--cd:#0d2420;--ac:#7fd6c6;--on:#04201a}
+[data-t="eagles"][data-m=light]{--bg:#f0f6f4;--cd:#fff;--ac:#00535b;--on:#fff}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--tx);font:16px/1.4 ui-rounded,"SF Pro Rounded",system-ui,sans-serif}
+#app{max-width:560px;margin:auto;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(100px + env(safe-area-inset-bottom,0px))}
+.mu{color:color-mix(in srgb,var(--tx) 58%,transparent)}.sm{font-size:13px}
+h1{font-size:30px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:19px;font-weight:700;margin:28px 4px 10px;scroll-margin-top:60px}
+.c{background:var(--cd);border-radius:26px;padding:16px 18px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0}
+.row+.row{border-top:1px solid color-mix(in srgb,var(--tx) 8%,transparent)}
+.me{color:var(--ac);font-weight:700}
+.vs{background:var(--ac);color:var(--on);border-radius:32px;padding:20px;margin:14px 0 12px}
+.vs .t{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.vs b{font-size:19px;line-height:1.15;display:block}.vs .o{opacity:.7;font-size:13px}
+.vs .x{font-size:13px;font-weight:700;background:var(--on);color:var(--ac);border-radius:99px;padding:4px 10px}
+.pills{display:flex;gap:8px;overflow-x:auto;position:sticky;top:0;padding:8px 0;background:var(--bg);z-index:5;scrollbar-width:none}
+button,select{font:inherit;color:inherit}
+.p{border:0;background:var(--cd);border-radius:99px;padding:7px 14px;font-size:14px;white-space:nowrap}
+.p.on{background:var(--ac);color:var(--on)}
+.btn{display:block;text-align:center;text-decoration:none;background:var(--cd);color:var(--ac);border-radius:99px;padding:14px;font-weight:700;margin-top:14px;border:0;width:100%}
+select{background:var(--cd);border:0;border-radius:16px;padding:12px;width:100%;appearance:none}
+img.h{width:28px;height:28px;border-radius:50%;object-fit:cover;background:color-mix(in srgb,var(--tx) 10%,transparent)}
+.pos{width:34px;font-size:12px;font-weight:700;color:var(--ac)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:0 12px calc(10px + env(safe-area-inset-bottom,0px));z-index:9}
+nav div{display:flex;gap:4px;background:var(--cd);border-radius:99px;padding:6px;width:100%;max-width:420px;box-shadow:0 8px 30px #0005}
+nav button{flex:1;border:0;background:none;opacity:.55;font-size:12px;padding:8px 0;border-radius:99px;line-height:1.25}
+nav button i{display:block;font-style:normal;font-size:17px}
+nav button.on{background:var(--ac);color:var(--on);opacity:1;font-weight:700}
+.sec{display:none}.sec.on{display:block}
+.ov{position:fixed;inset:0;background:#000a;z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sh{background:var(--bg);border-radius:30px 30px 0 0;padding:22px 18px calc(24px + env(safe-area-inset-bottom,0px));width:100%;max-width:560px;max-height:85vh;overflow:auto}
+#up{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:12px;right:12px;z-index:30;background:var(--ac);color:var(--on);border-radius:20px;padding:12px 16px;display:none;justify-content:space-between;align-items:center}
+#up button{background:var(--on);color:var(--ac);border:0;border-radius:99px;padding:6px 14px;font-weight:700}
+details summary{cursor:pointer;list-style:none}details p{margin-top:6px}
+</style></head><body>
+<div id="up"><span>Update available</span><button onclick="reload()">Reload</button></div>
+<div id="app">
+<div class="sec on" id="home"></div><div class="sec" id="league"></div><div class="sec" id="history"></div><div class="sec" id="settings"></div>
+</div>
+<nav><div id="nav"></div></nav><div id="ov"></div>
+<script>
+const V='0.1.0',ID='1313921396073594880',A='https://api.sleeper.app/v1',$=s=>document.querySelector(s);
+// Real-name tags. Keys are lowercase team names, display names, or Sleeper user IDs (IDs survive team renames).
+const OWNERS={'pookie nacuie':'Humza','hostman':'Ben','kyle':'Karim','team aaronchangeur':'Aaron','big busts':'Rob','redbirdy8':'Reda','maye back music':'Ali','team xlthrockmorton':'Kassem','perfect timing':'Moussa','largeaquatic bird':'Dan','mr hailee steinfeld':'Marc'};
+// Season stories shown in History. Add 'year':'text' entries.
+const NOTES={'2025':'','2024':''};
+const TH={ravens:'Ravens',niners:'49ers',raiders:'Raiders',browns:'Browns',bears:'Bears',eagles:'Eagles'};
+const CH=[{v:'0.1.0',s:'First build of THE LEAGUE.',f:'Home with Game of the Week, power rankings placeholder, recent moves and a Sleeper link. League with Team of the Week, standings, draft picks and trade history. History of past champions. Settings with 6 team themes and this changelog. Pick your team on first launch.'}];
+const LS=(k,v)=>v===undefined?JSON.parse(localStorage.getItem(k)||'null'):localStorage.setItem(k,JSON.stringify(v));
+const J=u=>fetch(A+u).then(r=>{if(!r.ok)throw Error(r.status);return r.json()});
+const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={};
+const tn=i=>e(S.tm[i]?.name||'Team '+i),pn=i=>e(S.P[i]?.[0]||'Player');
+const nm=t=>e(t.name)+(t.real?` <span class="mu sm">${e(t.real)}</span>`:'');
+const mine=t=>t.uid==LS('me')?' me':'';
+const rec=t=>`${t.w}-${t.l}${t.t?'-'+t.t:''}`;
+const gp=t=>Math.max(1,t.w+t.l+t.t),wp=t=>(t.w+t.t/2)/gp(t),ppg=t=>t.pf/gp(t);
+const rk=(a,b)=>wp(b)-wp(a)||b.pf-a.pf;
+function mkTeams(rs,us){const c=LS('own')||{};const T=rs.map(r=>{const u=us.find(x=>x.user_id==r.owner_id)||{},n=u.metadata?.team_name||u.display_name||'Team '+r.roster_id,real=OWNERS[n.toLowerCase()]||OWNERS[(u.display_name||'').toLowerCase()]||OWNERS[r.owner_id]||c[r.owner_id];if(real&&r.owner_id)c[r.owner_id]=real;const s=r.settings;return{id:r.roster_id,uid:r.owner_id,name:n,real,w:s.wins||0,l:s.losses||0,t:s.ties||0,pf:(s.fpts||0)+(s.fpts_decimal||0)/100,pa:(s.fpts_against||0)+(s.fpts_against_decimal||0)/100}});LS('own',c);return T}
+async function plr(){const p=LS('pl');if(p&&Date.now()-p.t<6048e5)return p.d;const r=await J('/players/nfl'),d={};for(const k in r){const x=r[k];if(['QB','RB','WR','TE','K','DEF'].includes(x.position)&&(x.team||x.position=='DEF'))d[k]=[x.full_name||(x.first_name+' '+x.last_name),x.position,x.team||''];}try{LS('pl',{t:Date.now(),d})}catch{}return d}
+async function load(){
+ try{
+  const [st,L,us,rs,tp,P]=await Promise.all([J('/state/nfl'),J('/league/'+ID),J(`/league/${ID}/users`),J(`/league/${ID}/rosters`),J(`/league/${ID}/traded_picks`),plr()]);
+  const T=mkTeams(rs,us),wk=Math.min(18,Math.max(1,st.week||1)),lw=Math.max(1,wk-1);
+  S={st,L,T,P,tp,wk,lw,tm:Object.fromEntries(T.map(t=>[t.id,t]))};
+  const [cur,last,tx]=await Promise.all([J(`/league/${ID}/matchups/${wk}`).catch(()=>[]),J(`/league/${ID}/matchups/${lw}`).catch(()=>[]),Promise.all(Array.from({length:wk},(_,i)=>J(`/league/${ID}/transactions/${i+1}`).catch(()=>[])))]);
+  S.cur=cur;S.last=last;S.tx=tx.flat().filter(t=>t.status=='complete').sort((a,b)=>b.created-a.created);
+  if(!LS('me'))pick();
+  draw();hist();
+ }catch(x){$('#home').innerHTML=`<h1>THE LEAGUE</h1><div class="c">Couldn't load Sleeper data. Check your connection and try again.<button class="btn" onclick="location.reload()">Retry</button></div>`}
+}
+function pick(){$('#ov').innerHTML=`<div class="ov"><div class="sh"><h2 style="margin-top:0">Which team is yours?</h2><p class="mu sm" style="margin:0 4px 10px">You'll be highlighted throughout the app. Change it any time in Settings.</p>${S.T.map(t=>`<button class="c" style="display:block;width:100%;text-align:left;border:0;color:inherit;margin-bottom:8px" onclick="setMe('${t.uid}')">${nm(t)}</button>`).join('')}</div></div>`}
+function setMe(u){LS('me',u);$('#ov').innerHTML='';draw()}
+function gotw(){const g={};S.cur.forEach(m=>m.matchup_id&&(g[m.matchup_id]??=[]).push(m));const R=[...S.T].sort(rk).map(t=>t.id),n=S.T.length;
+ const sc=([a,b])=>{const x=S.tm[a.roster_id],y=S.tm[b.roster_id],ra=R.indexOf(x.id),rb=R.indexOf(y.id);return(1-(ra+rb)/2/n)*1.2+(1-Math.abs(ra-rb)/n)+(1-Math.min(1,Math.abs(ppg(x)-ppg(y))/30))*.6+(1-Math.abs(wp(x)-wp(y)))*.6};
+ const best=Object.values(g).filter(a=>a.length==2).sort((p,q)=>sc(q)-sc(p))[0];
+ if(!best)return`<div class="c mu">No matchups yet this week.</div>`;
+ const[x,y]=best.map(m=>S.tm[m.roster_id]);
+ return`<div class="vs"><div class="o" style="margin-bottom:10px">Game of the Week</div><div class="t"><div><b>${e(x.name)}</b><span class="o">${x.real?e(x.real)+' · ':''}${rec(x)}</span></div><span class="x">VS</span><div style="text-align:right"><b>${e(y.name)}</b><span class="o">${y.real?e(y.real)+' · ':''}${rec(y)}</span></div></div><div class="o" style="margin-top:14px">#${R.indexOf(x.id)+1} vs #${R.indexOf(y.id)+1} in the standings, ${Math.abs(ppg(x)-ppg(y)).toFixed(1)} PPG apart</div></div>`}
+function mv(t){if(t.type=='trade')return`<b>Trade</b> ${t.roster_ids.map(tn).join(' ⇄ ')}`;const a=Object.entries(t.adds||{}).map(([p,r])=>`${tn(r)} added ${pn(p)}`),d=Object.entries(t.drops||{}).map(([p,r])=>`${tn(r)} dropped ${pn(p)}`);return[...a,...d].join('<br>')}
+const dt=t=>new Date(t.created).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+function totw(){const Q={QB:1,RB:2,WR:2,TE:1,K:1,DEF:1},pool={};
+ S.last.forEach(m=>Object.entries(m.players_points||{}).forEach(([p,v])=>{const x=S.P[p];if(x&&Q[x[1]])(pool[x[1]]??=[]).push({p,v,r:m.roster_id,x})}));
+ const rows=Object.keys(Q).flatMap(k=>(pool[k]||[]).sort((a,b)=>b.v-a.v).slice(0,Q[k]));
+ if(!rows.length)return`<div class="c mu">No scores yet.</div>`;
+ return`<div class="c">${rows.map(o=>`<div class="row"><span class="pos">${o.x[1]}</span><img class="h" loading="lazy" src="https://sleepercdn.com/content/nfl/players/thumb/${o.p}.jpg" onerror="this.style.visibility='hidden'"><span style="flex:1;min-width:0"><b>${e(o.x[0])}</b> <span class="mu sm">${e(o.x[2])}</span><br><span class="mu sm">${tn(o.r)}</span></span><b>${o.v.toFixed(1)}</b></div>`).join('')}</div>`}
+function power(){const mx=Math.max(...S.T.map(t=>t.pf))||1;return S.T.map(t=>({t,s:wp(t)*.6+t.pf/mx*.4})).sort((a,b)=>b.s-a.s).map((o,i)=>`<div class="row${mine(o.t)}"><span class="mu" style="width:22px">${i+1}</span><span style="flex:1">${nm(o.t)}</span><span class="mu sm">${rec(o.t)}</span></div>`).join('')}
+function picks(){const s0=+S.st.season+(['regular','post'].includes(S.st.season_type)?1:0),ys=[s0,s0+1,s0+2],nr=S.L.settings.draft_rounds||4,P=[];
+ ys.forEach(y=>S.T.forEach(t=>{for(let r=1;r<=nr;r++)P.push({y,r,o:t.id,w:t.id})}));
+ S.tp.forEach(p=>{const q=P.find(z=>z.y==p.season&&z.r==p.round&&z.o==p.roster_id);if(q)q.w=p.owner_id});
+ const v=S.pv||'team',bar=`<div class="pills" style="position:static;padding:0 0 10px"><button class="p ${v=='team'?'on':''}" onclick="S.pv='team';draw()">By team</button><button class="p ${v=='round'?'on':''}" onclick="S.pv='round';draw()">By round</button></div>`;
+ if(v=='team')return bar+[...S.T].sort(rk).map(t=>`<details class="c${mine(t)}"><summary>${nm(t)} <span class="mu sm">${P.filter(p=>p.w==t.id).length} picks</span></summary>${ys.map(y=>`<p class="sm"><b>${y}</b> ${P.filter(p=>p.w==t.id&&p.y==y).map(p=>`R${p.r}${p.o!=t.id?` (${tn(p.o)})`:''}`).join(', ')||'<span class="mu">none</span>'}</p>`).join('')}</details>`).join('');
+ return bar+ys.map(y=>`<details class="c"><summary><b>${y}</b></summary>${Array.from({length:nr},(_,i)=>`<p class="sm"><b>Round ${i+1}</b><br>${P.filter(p=>p.y==y&&p.r==i+1).map(p=>p.w!=p.o?`<span class="me">${tn(p.o)} → ${tn(p.w)}</span>`:tn(p.o)).join('<br>')}</p>`).join('')}</details>`).join('')}
+function trades(){const k=S.tx.filter(t=>t.type=='trade');if(!k.length)return`<div class="c mu">No trades yet this season.</div>`;
+ return k.map(t=>`<div class="c"><div class="mu sm">${dt(t)}</div>${t.roster_ids.map(r=>{const g=Object.entries(t.adds||{}).filter(([,x])=>x==r).map(([p])=>pn(p)),q=(t.draft_picks||[]).filter(x=>x.owner_id==r).map(x=>`${x.season} R${x.round}`+(x.roster_id!=r?` (${tn(x.roster_id)})`:''));return`<div style="margin-top:8px"><b>${tn(r)}</b> get<br><span class="sm">${[...g,...q].join(', ')||'—'}</span></div>`}).join('')}</div>`).join('')}
+function draw(){
+ const me=S.T.find(t=>t.uid==LS('me'));
+ $('#home').innerHTML=`<h1>THE LEAGUE</h1><div class="mu">${e(S.L.season)} season · Week ${S.wk}${me?' · '+e(me.name):''}</div>${gotw()}
+ <h2>Power rankings</h2><div class="c mu" style="text-align:center;padding:34px 18px">Power rankings are coming soon.</div>
+ <h2>Recent moves</h2><div class="c">${S.tx.slice(0,5).map(t=>`<div class="row"><span class="mu sm" style="width:46px">${dt(t)}</span><span class="sm" style="flex:1">${mv(t)}</span></div>`).join('')||'<span class="mu">No moves yet.</span>'}</div>
+ <a class="btn" href="https://sleeper.com/leagues/${ID}">Open THE LEAGUE in Sleeper</a>`;
+ const bm=[['rk','Rankings'],['tw','Team of the Week'],['st','Standings'],['pk','Draft picks'],['tr','Trades']];
+ $('#league').innerHTML=`<div class="pills">${bm.map(b=>`<button class="p" onclick="document.getElementById('s-${b[0]}').scrollIntoView({behavior:'smooth'})">${b[1]}</button>`).join('')}</div>
+ <h2 id="s-rk" style="margin-top:6px">Power rankings</h2><div class="c">${power()}<p class="mu sm" style="margin-top:8px">Temporary order from record and points for.</p></div>
+ <h2 id="s-tw">Team of the Week</h2><div class="mu sm" style="margin:-6px 4px 10px">Week ${S.lw} · top scorer at each spot, half-PPR</div>${totw()}
+ <h2 id="s-st">Standings</h2><div class="c"><div class="row mu sm"><span style="width:22px"></span><span style="flex:1">Team</span><span>W-L</span><span style="width:64px;text-align:right">PF</span></div>${[...S.T].sort(rk).map((t,i)=>`<div class="row${mine(t)}"><span class="mu" style="width:22px">${i+1}</span><span style="flex:1">${nm(t)}</span><span>${rec(t)}</span><span class="mu" style="width:64px;text-align:right">${t.pf.toFixed(1)}</span></div>`).join('')}</div>
+ <h2 id="s-pk">Draft picks</h2>${picks()}<h2 id="s-tr">Trades</h2>${trades()}`;
+ const m=LS('m')||'dark',t=LS('t')||'ravens';
+ $('#settings').innerHTML=`<h1>Settings</h1><h2>Theme</h2><select onchange="setT(this.value)">${Object.entries(TH).map(([k,v])=>`<option value="${k}"${k==t?' selected':''}>${v}</option>`).join('')}</select><div class="pills" style="position:static;margin-top:10px"><button class="p ${m=='dark'?'on':''}" onclick="setM('dark')">Dark</button><button class="p ${m=='light'?'on':''}" onclick="setM('light')">Light</button></div>
+ <h2>Your team</h2><select onchange="setMe(this.value)">${S.T.map(x=>`<option value="${x.uid}"${x.uid==LS('me')?' selected':''}>${e(x.name)}${x.real?' ('+e(x.real)+')':''}</option>`).join('')}</select>
+ <h2>Changelog</h2>${CH.slice(0,3).map(c=>`<details class="c"><summary><b>${c.v}</b> <span class="mu sm">${e(c.s)}</span></summary><p class="sm">${e(c.f)}</p></details>`).join('')}
+ <h2>App</h2><div class="c"><div class="row"><span style="flex:1">Version</span><span class="mu">${V}</span></div></div><button class="btn" onclick="chk(1)">Check for updates</button>`;
+}
+async function hist(){const out=[];let id=S.L.previous_league_id;
+ try{while(id&&id!='0'&&out.length<8){const[L,wb,us,rs]=await Promise.all([J('/league/'+id),J(`/league/${id}/winners_bracket`),J(`/league/${id}/users`),J(`/league/${id}/rosters`)]),T=mkTeams(rs,us),f=wb.find(x=>x.p==1);out.push({y:L.season,c:T.find(t=>t.id==f?.w),r:T.find(t=>t.id==f?.l)});id=L.previous_league_id}}catch{}
+ S.H=out;$('#history').innerHTML=`<h1>History</h1><div class="mu" style="margin-bottom:14px">Champions</div>${out.map((h,i)=>`<button class="c" style="display:block;width:100%;text-align:left;border:0;color:inherit" onclick="season(${i})"><div class="mu sm">${h.y}</div><b style="font-size:20px">${h.c?e(h.c.name):'No champion found'}</b>${h.c?.real?`<div class="mu">${e(h.c.real)}</div>`:''}</button>`).join('')||'<div class="c mu">No past seasons found.</div>'}`}
+function season(i){const h=S.H[i],n=NOTES[h.y];$('#ov').innerHTML=`<div class="ov" onclick="if(event.target==this)this.innerHTML=''"><div class="sh"><div class="mu">${h.y} champion</div><h1>${h.c?e(h.c.name):'—'}</h1><div class="mu">${h.c?.real?e(h.c.real)+' · ':''}${h.c?rec(h.c)+' · '+h.c.pf.toFixed(1)+' PF':''}</div>${h.r?`<p class="sm mu" style="margin-top:10px">Beat ${e(h.r.name)} in the final</p>`:''}<h2>Season recap</h2><p>${n?e(n):'<span class="mu">This season\'s story is coming soon.</span>'}</p><button class="btn" onclick="$('#ov').innerHTML=''">Close</button></div></div>`}
+function setT(t){LS('t',t);theme()}function setM(m){LS('m',m);theme();draw()}
+function theme(){document.documentElement.dataset.t=LS('t')||'ravens';document.documentElement.dataset.m=LS('m')||'dark'}
+function tab(n){document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==n));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.n==n));scrollTo(0,0)}
+$('#nav').innerHTML=[['home','⌂','Home'],['league','☰','League'],['history','◷','History'],['settings','⚙','Settings']].map(([n,i,l])=>`<button data-n="${n}" class="${n=='home'?'on':''}" onclick="tab('${n}')"><i>${i}</i>${l}</button>`).join('');
+async function chk(m){try{const r=await fetch('version.json?'+Date.now(),{cache:'no-store'}),j=await r.json();if(j.v!==V)$('#up').style.display='flex';else if(m)alert('You are on the latest version ('+V+').')}catch{if(m)alert("Couldn't check for updates.")}}
+async function reload(){try{(await navigator.serviceWorker.getRegistrations()).forEach(r=>r.unregister());(await caches.keys()).forEach(k=>caches.delete(k))}catch{}location.reload()}
+theme();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+document.addEventListener('visibilitychange',()=>!document.hidden&&chk());
+chk();load();
+</script></body></html>
