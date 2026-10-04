@@ -76,6 +76,14 @@ nav{padding-bottom:max(8px,calc(env(safe-area-inset-bottom,0px) - 18px))}
 html[data-g=on]{background:radial-gradient(55% 35% at 5% 0%,color-mix(in srgb,var(--ac) 55%,transparent),transparent),radial-gradient(50% 35% at 100% 40%,color-mix(in srgb,var(--ac) 40%,transparent),transparent),radial-gradient(60% 40% at 30% 100%,color-mix(in srgb,var(--ac) 35%,transparent),transparent),var(--bg) fixed}
 html[data-g=on] :is(.c,.p:not(.on),select,nav div,.btn){background:linear-gradient(135deg,#ffffff26,#ffffff08 45%,#ffffff12),color-mix(in srgb,var(--cd) 14%,transparent);-webkit-backdrop-filter:blur(30px) saturate(1.9) brightness(1.05);backdrop-filter:blur(30px) saturate(1.9) brightness(1.05);border:1px solid #ffffff30;box-shadow:inset 0 1px 0 #ffffff55,inset 0 -1px 0 #0003,0 10px 30px #0003}
 html[data-g=on] .tg .c{background:#ffffff0d}
+html,body{height:100%;height:-webkit-fill-available}
+#hd{background:none;color:var(--tx);padding:2px 4px 8px;border-radius:0;margin-bottom:4px}#hd::after{display:none}
+#hd h1{font-size:21px;letter-spacing:.18em;font-weight:800;color:var(--ac)}
+#hd .mu{color:color-mix(in srgb,var(--tx) 58%,transparent);opacity:1}
+#hd .tc{background:color-mix(in srgb,var(--tx) 6%,transparent);border-left-color:var(--ac);color:var(--tx)}
+nav{padding:0}
+nav div{max-width:none;width:100%;border-radius:22px 22px 0 0;padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 4px);box-shadow:0 -6px 24px #0003}
+html[data-g=on] nav div{border-bottom:0}
 </style></head><body>
 <div id="up"><span>Update available</span><button onclick="reload()">Reload</button></div>
 <div id="sc"><div id="app"><div id="hd"><h1>THE LEAGUE</h1></div>
@@ -83,13 +91,13 @@ html[data-g=on] .tg .c{background:#ffffff0d}
 </div></div>
 <nav><div id="nav"></div></nav><div id="ov"></div>
 <script>
-const V='0.2.0',ID='1313921396073594880',A='https://api.sleeper.app/v1',$=s=>document.querySelector(s);
+const V='0.2.2',ID='1313921396073594880',A='https://api.sleeper.app/v1',$=s=>document.querySelector(s);
 // Real-name tags. Keys are lowercase team names, display names, or Sleeper user IDs (IDs survive team renames).
 const OWNERS={'pookie nacuie':'Humza','hostman':'Ben','kyle':'Karim','team aaronchangeur':'Aaron','big busts':'Rob','redbirdy8':'Reda','maye back music':'Ali','team xlthrockmorton':'Kassem','perfect timing':'Moussa','largeaquatic bird':'Dan','mr hailee steinfeld':'Marc'};
 // Season stories shown in History. Add 'year':'text' entries.
 const NOTES={'2025':'','2024':''};
 const TH={ravens:'Ravens',niners:'49ers',raiders:'Raiders',browns:'Browns',bears:'Bears',eagles:'Eagles'};
-const CH=[{v:'0.2.0',s:'Liquid Glass, trade cards with grades and a louder Game of the Week.',f:'Liquid Glass replaces Frosted Glass. Colored header banner. Pick numbers only for the next draft year. Team of the Week shows owners. Draft Picks start collapsed by round, with a collapse-all caret on League. Trades show 2 at a time as side-by-side cards with analysis and KeepTradeCut-based values (0-100). Game of the Week got unhinged. Bottom bar sits lower.'},{v:'0.1.1',s:'Frosted glass, playoff odds and a sleeker layout.',f:'Frosted Glass look across all themes (toggle in Settings). Playoff odds in standings. Game of the Week blurb, players to watch and expected outcome. Collapsible League sections. Projected pick numbers like 1.01. Header and your matchup stay on every tab. Bottom bar fixed in place. Smaller text and emoji headers.'},{v:'0.1.0',s:'First build of THE LEAGUE.',f:'Home with Game of the Week, power rankings placeholder, recent moves and a Sleeper link. League with Team of the Week, standings, draft picks and trade history. History of past champions. Settings with 6 team themes and this changelog. Pick your team on first launch.'}];
+const CH=[{v:'0.2.2',s:'Quieter header, full-width nav, simpler changelog.'},{v:'0.2.1',s:'Live trade values from RosterAudit.'},{v:'0.2.0',s:'Liquid Glass, trade cards, spicier Game of the Week.'}];
 const LS=(k,v)=>v===undefined?JSON.parse(localStorage.getItem(k)||'null'):localStorage.setItem(k,JSON.stringify(v));
 const J=u=>fetch(A+u).then(r=>{if(!r.ok)throw Error(r.status);return r.json()});
 const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -107,6 +115,7 @@ async function load(){
   const [st,L,us,rs,tp,P]=await Promise.all([J('/state/nfl'),J('/league/'+ID),J(`/league/${ID}/users`),J(`/league/${ID}/rosters`),J(`/league/${ID}/traded_picks`),plr()]);
   const T=mkTeams(rs,us),wk=Math.min(18,Math.max(1,st.week||1)),lw=Math.max(1,wk-1);
   S={st,L,T,P,tp,wk,lw,tm:Object.fromEntries(T.map(t=>[t.id,t]))};
+  S.V=await vals().catch(()=>null);
   const [cur,last,tx]=await Promise.all([J(`/league/${ID}/matchups/${wk}`).catch(()=>[]),J(`/league/${ID}/matchups/${lw}`).catch(()=>[]),Promise.all(Array.from({length:wk},(_,i)=>J(`/league/${ID}/transactions/${i+1}`).catch(()=>[])))]);
   S.cur=cur;S.last=last;S.tx=tx.flat().filter(t=>t.status=='complete').sort((a,b)=>b.created-a.created);
   const pw=S.L.settings.playoff_week_start||15;S.fut=await Promise.all(Array.from({length:Math.max(0,pw-wk)},(_,i)=>J(`/league/${ID}/matchups/${wk+i}`).catch(()=>[])));sim();
@@ -148,18 +157,21 @@ function picks(){const s0=Y0(),ys=[s0,s0+1,s0+2],nr=S.L.settings.draft_rounds||4
  const v=S.pv||'round',bar=`<div class="pills" style="position:static;padding:0 0 10px"><button class="p ${v=='team'?'on':''}" onclick="S.pv='team';draw()">By Team</button><button class="p ${v=='round'?'on':''}" onclick="S.pv='round';draw()">By Round</button></div>`,note=`<p class="mu sm" style="margin:4px">${s0} pick numbers are projected from current standings (worst record picks first) and will change.</p>`;
  if(v=='team')return bar+[...S.T].sort(rk).map(t=>`<details class="c${mine(t)}"><summary>${nm(t)} <span class="mu sm">${P.filter(p=>p.w==t.id).length} picks</span></summary>${ys.map(y=>`<p class="sm"><b>${y}</b> ${P.filter(p=>p.w==t.id&&p.y==y).sort((a,b)=>a.r-b.r||oi(a)-oi(b)).map(p=>lb(p)+(p.o!=t.id?` (${tn(p.o)})`:'')).join(', ')||'<span class="mu">none</span>'}</p>`).join('')}</details>`).join('')+note;
  return bar+ys.map(y=>`<details class="c"><summary><b>${y}</b>${y==s0?'':' <span class="mu sm">traded picks only</span>'}</summary>${Array.from({length:nr},(_,i)=>{const L=P.filter(p=>p.y==y&&p.r==i+1&&(y==s0||p.w!=p.o)).sort((a,b)=>oi(a)-oi(b));return`<p class="sm"><b>Round ${i+1}</b><br>${L.map(p=>`${lb(p)} ${p.w!=p.o?`<span class="me">${tn(p.o)} → ${tn(p.w)}</span>`:tn(p.o)}`).join('<br>')||'<span class="mu">None traded</span>'}</p>`}).join('')}</details>`).join('')+note}
-// KeepTradeCut snapshot (Oct 3 2026, superflex .5 PPR), values scaled 0-100. Players outside the top 47 show as ~20 (estimate).
-const nk=s=>s.toLowerCase().replace(/[^a-z ]/g,'').replace(/ (jr|sr|ii|iii|iv|v)$/,'').trim();
-const KV=Object.fromEntries("Jahmyr Gibbs:100,Jaxon Smith-Njigba:100,Josh Allen:100,Bijan Robinson:100,Ja'Marr Chase:91,Brock Bowers:81,Amon-Ra St. Brown:80,Lamar Jackson:77,Puka Nacua:77,Caleb Williams:76,Trey McBride:76,Ashton Jeanty:75,Jeremiyah Love:73,CeeDee Lamb:73,Kenneth Walker III:73,Justin Jefferson:72,Joe Burrow:70,Brock Purdy:69,Chris Olave:68,Drake London:68,Trevor Lawrence:68,Jonathan Taylor:68,Patrick Mahomes:66,James Cook:66,Malik Nabers:66,Drake Maye:65,Garrett Wilson:62,Zay Flowers:62,George Pickens:61,Tyler Shough:60,Jayden Daniels:60,Parker Washington:60,Tetairoa McMillan:60,Jalen Hurts:60,Chase Brown:58,Nico Collins:58,Tyler Warren:58,Omarion Hampton:58,Christian McCaffrey:57,DeVonta Smith:57,Breece Hall:55,Jaxson Dart:55,De'Von Achane:55,Bo Nix:54,Justin Herbert:54,Emeka Egbuka:54,Ladd McConkey:54".split(',').map(x=>{const i=x.lastIndexOf(':');return[nk(x.slice(0,i)),+x.slice(i+1)]}));
+// Values by RosterAudit.com (free public API). Scaled to 0-100 (their value / 100), cached 6h.
+async function vals(){const sf=(S.L.roster_positions||[]).includes('SUPER_FLEX'),k=(sf?'sf':'1qb')+((S.L.scoring_settings?.rec??.5)>=1?'_ppr':'_half'),c=LS('rv');if(c&&c.k==k&&Date.now()-c.t<216e5)return c;
+ const B='https://rosteraudit.com/wp-json/ra/v1/',[v,p]=await Promise.all([fetch(B+'rankings/values?format_key='+k).then(r=>r.json()),fetch(B+'picks').then(r=>r.json())]),m=v.values||v,f=sf?'sf':'1qb',d={k,t:Date.now(),pl:{},pk:{}};
+ for(const i in m){const x=m[i];if(x&&typeof x=='object'&&x[f]!=null)d.pl[i]=Math.min(100,Math.round(x[f]/100))}
+ (p.picks||[]).forEach(x=>d.pk[`${x.pick_season}-${x.pick_round}-${x.pick_slot}`]=Math.round((sf?x.val_sf:x.val_1qb)/100));
+ if(!Object.keys(d.pl).length)throw 0;LS('rv',d);return d}
 const tw=i=>tn(i)+(S.tm[i]?.real?` (${e(S.tm[i].real)})`:''),gr=s=>s>=.6?'A':s>=.53?'B+':s>=.47?'B':s>=.4?'C':'D';
-function pkv(x){const y0=Y0(),sl=slotOf(x.roster_id);if(x.round==1){if(x.season==y0)return[sl<=4?70:sl<=8?59:48,sl>8];return[x.season==y0+1?52:45,1]}return[[0,0,30,18,10][Math.min(x.round,4)],1]}
-function sides(t){return t.roster_ids.map(r=>{const as=[...Object.entries(t.adds||{}).filter(([,x])=>x==r).map(([p])=>{const v=KV[nk(S.P[p]?.[0]||'')];return{n:pn(p),pos:S.P[p]?.[1],v:v??20,est:v==null}}),...(t.draft_picks||[]).filter(x=>x.owner_id==r).map(x=>{const[v,est]=pkv(x);return{n:`${x.season} Rd${x.round}`+(x.roster_id!=r?` (${tn(x.roster_id)})`:''),v,est}})];return{r,as,tot:as.reduce((a,b)=>a+b.v,0)}})}
+function pkv(x){const n=S.T.length,sl=slotOf(x.roster_id),y=x.season==Y0()?(sl<=n/3?'early':sl<=2*n/3?'mid':'late'):'mid',v=S.V?.pk[`${x.season}-${Math.min(+x.round,5)}-${y}`];return[v??2,v==null]}
+function sides(t){return t.roster_ids.map(r=>{const as=[...Object.entries(t.adds||{}).filter(([,x])=>x==r).map(([p])=>{const v=S.V?.pl[p];return{n:pn(p),pos:S.P[p]?.[1],v:v??2,est:v==null}}),...(t.draft_picks||[]).filter(x=>x.owner_id==r).map(x=>{const[v,est]=pkv(x);return{n:`${x.season} Rd${x.round}`+(x.roster_id!=r?` (${tn(x.roster_id)})`:''),v,est}})];return{r,as,tot:as.reduce((a,b)=>a+b.v,0)}})}
 function ana(sd){const ph=s=>{const pl=s.as.filter(x=>x.pos),c={};pl.forEach(x=>c[x.pos]=(c[x.pos]||0)+1);const d=Object.keys(c).find(k=>c[k]>1&&k!='K'&&k!='DEF'),top=[...s.as].sort((a,b)=>b.v-a.v)[0];
  return !pl.length?`${tn(s.r)} is stockpiling picks and playing the long game`:d?`${tn(s.r)} is doubling up at ${d}, building a two-headed monster there`:top.v>=70?`${tn(s.r)} lands the blue chip ${top.n}`:`${tn(s.r)} adds depth with ${pl.map(x=>x.n).join(', ')}`},w=[...sd].sort((a,b)=>b.tot-a.tot),dv=w[0].tot-w[1].tot;
- return sd.map(ph).join('; ')+'. '+(dv<8?'On KTC value this one is basically even.':`${tn(w[0].r)} wins the value battle by ${dv} points.`)}
-function tcard(t){const sd=sides(t),T=sd.reduce((a,b)=>a+b.tot,0)||1;return`<div class="c"><div class="mu sm">${dt(t)}</div><div class="tg" style="grid-template-columns:repeat(${sd.length},1fr)">${sd.map(s=>`<div class="c"><b>${tw(s.r)}</b><div class="mu sm">Gets</div><ul>${s.as.map(x=>`<li><span>${x.n}</span><b>${x.est?'~':''}${x.v}</b></li>`).join('')||'<li>—</li>'}</ul><div class="row" style="justify-content:space-between"><span class="sm mu">Total ${s.tot}</span><span class="gr">${gr(s.tot/T)}</span></div></div>`).join('')}</div><p class="sm" style="margin-top:10px">🧠 ${ana(sd)}</p></div>`}
+ return sd.map(ph).join('; ')+'. '+(!S.V?'':dv<8?'On value this one is basically even.':`${tn(w[0].r)} wins the value battle by ${dv} points.`)}
+function tcard(t){const sd=sides(t),T=sd.reduce((a,b)=>a+b.tot,0)||1;return`<div class="c"><div class="mu sm">${dt(t)}</div><div class="tg" style="grid-template-columns:repeat(${sd.length},1fr)">${sd.map(s=>`<div class="c"><b>${tw(s.r)}</b><div class="mu sm">Gets</div><ul>${s.as.map(x=>`<li><span>${x.n}</span><b>${S.V?(x.est?'~':'')+x.v:'–'}</b></li>`).join('')||'<li>—</li>'}</ul><div class="row" style="justify-content:space-between"><span class="sm mu">Total ${s.tot}</span><span class="gr">${S.V?gr(s.tot/T):'–'}</span></div></div>`).join('')}</div><p class="sm" style="margin-top:10px">🧠 ${ana(sd)}</p></div>`}
 function trades(){const k=S.tx.filter(t=>t.type=='trade');if(!k.length)return`<div class="c mu">No trades yet this season.</div>`;
- return k.slice(0,2).map(tcard).join('')+(k.length>2?`<details class="c"><summary>Show ${k.length-2} more trade${k.length>3?'s':''}</summary>${k.slice(2).map(tcard).join('')}</details>`:'')+`<p class="mu sm" style="margin:4px">Values are 0-100 from a KeepTradeCut snapshot (superflex, .5 PPR). ~ means estimated.</p>`}
+ return k.slice(0,2).map(tcard).join('')+(k.length>2?`<details class="c"><summary>Show ${k.length-2} more trade${k.length>3?'s':''}</summary>${k.slice(2).map(tcard).join('')}</details>`:'')+`<p class="mu sm" style="margin:4px">${S.V?`Values are 0-100 (${S.V.k.replace('_',' ')}) from <a href="https://rosteraudit.com" style="color:var(--ac)">RosterAudit.com</a>. ~ means estimated.`:'Trade values are unavailable right now.'}</p>`}
 function draw(){if(document.querySelector('.sx'))S.op=[...document.querySelectorAll('.sx')].filter(d=>d.open).map(d=>d.id);hdr();
  const me=S.T.find(t=>t.uid==LS('me'));
  $('#home').innerHTML=`${gotw()}
@@ -175,8 +187,8 @@ function draw(){if(document.querySelector('.sx'))S.op=[...document.querySelector
  const m=LS('m')||'dark',t=LS('t')||'ravens';
  $('#settings').innerHTML=`<h2 style="margin-top:0">🎨 Theme</h2><select onchange="setT(this.value)">${Object.entries(TH).map(([k,v])=>`<option value="${k}"${k==t?' selected':''}>${v}</option>`).join('')}</select><div class="pills" style="position:static;margin-top:10px"><button class="p ${m=='dark'?'on':''}" onclick="setM('dark')">Dark</button><button class="p ${m=='light'?'on':''}" onclick="setM('light')">Light</button><button class="p ${(LS('g')||'on')=='on'?'on':''}" onclick="setG((LS('g')||'on')=='on'?'off':'on')">💧 Liquid Glass</button></div>
  <h2>👤 Your Team</h2><select onchange="setMe(this.value)">${S.T.map(x=>`<option value="${x.uid}"${x.uid==LS('me')?' selected':''}>${e(x.name)}${x.real?' ('+e(x.real)+')':''}</option>`).join('')}</select>
- <h2>📝 Changelog</h2>${CH.slice(0,3).map(c=>`<details class="c"><summary><b>${c.v}</b> <span class="mu sm">${e(c.s)}</span></summary><p class="sm">${e(c.f)}</p></details>`).join('')}
- <h2>⚙️ App</h2><div class="c"><div class="row"><span style="flex:1">Version</span><span class="mu">${V}</span></div></div><button class="btn" onclick="chk(1)">Check for Updates</button>`;
+ <h2>📝 Changelog</h2><div class="c">${CH.slice(0,3).map(c=>`<div class="row sm"><b style="width:48px">${c.v}</b><span class="mu" style="flex:1">${e(c.s)}</span></div>`).join('')}</div>
+ <h2>⚙️ App</h2><div class="c"><div class="row"><span style="flex:1">Version</span><span class="mu">${V}</span></div><div class="row sm mu">Trade values by <a href="https://rosteraudit.com" style="color:var(--ac)">RosterAudit.com</a></div></div><button class="btn" onclick="chk(1)">Check for Updates</button>`;
 }
 async function hist(){const out=[];let id=S.L.previous_league_id;
  try{while(id&&id!='0'&&out.length<8){const[L,wb,us,rs]=await Promise.all([J('/league/'+id),J(`/league/${id}/winners_bracket`),J(`/league/${id}/users`),J(`/league/${id}/rosters`)]),T=mkTeams(rs,us),f=wb.find(x=>x.p==1);out.push({y:L.season,c:T.find(t=>t.id==f?.w),r:T.find(t=>t.id==f?.l)});id=L.previous_league_id}}catch{}
